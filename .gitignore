@@ -1,0 +1,12 @@
+.gradle
+build
+.kotlin
+
+*.class
+
+guava-*/
+
+app/org/
+app/bin/
+
+tmp/

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Usage: ./run [--opcodes] <file.java|file.class|file.jar> [ClassName]
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+export DECOJAV_CWD="$SCRIPT_DIR"
+if [ $# -eq 0 ]; then
+    ./gradlew -q run
+else
+    ARGS_STR=""
+    for arg in "$@"; do
+        if [[ "$arg" == -* ]]; then
+            ARGS_STR="$ARGS_STR $arg"
+        elif [ -f "$arg" ]; then
+            ABS="$(realpath "$arg" 2>/dev/null || readlink -f "$arg")"
+            ARGS_STR="$ARGS_STR $ABS"
+        else
+            # Not a file — pass as-is (class name filter, etc.)
+            ARGS_STR="$ARGS_STR $arg"
+        fi
+    done
+    ./gradlew -q run --args="${ARGS_STR# }"
+fi
